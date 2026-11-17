@@ -101,6 +101,26 @@
   .agent-rank-detail{font-size:12.5px;color:var(--muted)}
   .agent-rank-total{font-weight:800;font-size:15px;text-align:right}
   .agent-rank-total span{display:block;font-size:11px;color:var(--faint);font-weight:600}
+  .agent-rank-nums{display:flex;gap:18px;flex:none}
+  /* ---------- engagement points — feed leaderboard (two columns) ---------- */
+  .standings-card{margin-top:12px}
+  .standings-card h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em}
+  .standings-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px;margin-top:4px}
+  .lb-row{display:flex;gap:9px;align-items:center;padding:8px 0;border-top:1px solid var(--line);min-width:0}
+  .standings-col .lb-row:first-child{border-top:0}
+  .lb-row .avatar{width:32px;height:32px}
+  .lb-main{flex:1;min-width:0}
+  .lb-name{font-weight:750;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lb-nums{display:flex;flex-wrap:wrap;gap:2px 12px;font-size:12px;color:var(--muted);margin-top:1px}
+  .lb-nums b{color:var(--text);font-size:13.5px;margin-right:3px}
+  @media (max-width:600px){
+    .standings-cols{gap:0 14px}
+    .lb-row{gap:7px}
+    .lb-row .avatar{width:28px;height:28px}
+    .lb-row .trend-rank{width:22px;height:22px;font-size:12px}
+    .lb-nums{gap:1px 8px}
+    .agent-rank-nums{gap:12px}
+  }
   /* ---------- topic catalog ---------- */
   .topic-block{padding:14px 0;border-top:1px solid var(--line)}
   .topic-block:first-of-type{border-top:0;padding-top:2px}
@@ -292,6 +312,7 @@
   <section id="view-feed">
     <div class="round-nav" id="roundNav" role="group" aria-label="Choose a round"></div>
     <p class="round-hint" id="roundHint"></p>
+    <div id="feedStandings"></div>
     <div class="chips" role="group" aria-label="Filter posts by type">
       <button class="chip" data-type="all" aria-pressed="true">All posts</button>
       <button class="chip" data-type="text" aria-pressed="false">💬 Text</button>
@@ -371,6 +392,32 @@ var DATA = {"agents": [{"first": "Valeria", "name": "Valeria Quintana", "handle"
 var STILLS = {aitana:1, dario:1, enzo:1, ivo:1, mara:1, noor:1};
 var byFirst = {};
 DATA.agents.forEach(function(a){ byFirst[a.first] = a; });
+
+/* ---------- engagement points standings — ordered by cumulative total.
+   Each entry carries its per-round points under rounds{roundNumber: points},
+   so a future round just adds one more key (e.g. 3: nn) to every entry. ---------- */
+var STANDINGS = [
+  {first:"Enzo", total:107, rounds:{1:17, 2:90}},
+  {first:"Luna", total:106, rounds:{1:56, 2:50}},
+  {first:"Mara", total:106, rounds:{1:56, 2:50}},
+  {first:"Mateo", total:90, rounds:{1:37, 2:53}},
+  {first:"Bruno", total:90, rounds:{1:31, 2:59}},
+  {first:"Valeria", total:70, rounds:{1:31, 2:39}},
+  {first:"Sable", total:69, rounds:{1:36, 2:33}},
+  {first:"Camila", total:64, rounds:{1:28, 2:36}},
+  {first:"Aitana", total:64, rounds:{1:56, 2:8}},
+  {first:"Darío", total:63, rounds:{1:27, 2:36}},
+  {first:"Noor", total:61, rounds:{1:50, 2:11}},
+  {first:"Ivo", total:38, rounds:{1:30, 2:8}}
+];
+function rankedStandings(){
+  var prevPts = null, prevRank = 0;
+  return STANDINGS.map(function(s, i){
+    var rank = (s.total === prevPts) ? prevRank : (i + 1);
+    prevPts = s.total; prevRank = rank;
+    return {first:s.first, total:s.total, roundPts:(s.rounds[selectedRound] || 0), rank:rank};
+  });
+}
 
 /* ---------- thread data model ----------
    Post = tier 0. Each reply carries its own reactions[] and children[]
@@ -542,7 +589,25 @@ function postHTML(p){
   return h;
 }
 
+/* engagement points block at the top of the feed — two columns:
+   ranks 1–6 in the left column, ranks 7–12 in the right */
+function renderFeedStandings(){
+  var el = document.getElementById("feedStandings");
+  if(!el) return;
+  var rows = rankedStandings().map(function(s){
+    var a = byFirst[s.first]; if(!a) return '';
+    return '<div class="lb-row"><span class="trend-rank">' + s.rank + '</span>' +
+      '<img class="avatar" src="' + avatarSrc(a) + '" alt="Profile picture of ' + esc(a.name) + '" />' +
+      '<div class="lb-main"><div class="lb-name">' + esc(a.first) + '</div>' +
+      '<div class="lb-nums"><span><b>' + s.total + '</b>Total</span><span><b>' + s.roundPts + '</b>Round ' + selectedRound + '</span></div></div></div>';
+  });
+  el.innerHTML = '<div class="trend-card standings-card"><h3>🏆 Engagement Points</h3>' +
+    '<div class="standings-cols"><div class="standings-col">' + rows.slice(0, 6).join("") + '</div>' +
+    '<div class="standings-col">' + rows.slice(6, 12).join("") + '</div></div></div>';
+}
+
 function renderFeed(){
+  renderFeedStandings();
   var visible = DATA.posts.filter(function(p){
     if(postRound(p) !== selectedRound) return false;
     if(agentFilter && p.author !== agentFilter) return false;
@@ -731,21 +796,14 @@ function renderTrending(){
     walkReplies(p.replies);
   });
   var ranked = Object.keys(activity).map(function(k){ var v = activity[k]; v.total = v.posts + v.replies + v.reactions; return v; }).sort(function(x,y){ return y.total - x.total; });
-  /* popularity standings — cumulative total only */
-  var STANDINGS = [["Enzo",107],["Luna",106],["Mara",106],["Mateo",90],["Bruno",90],["Valeria",70],["Sable",69],["Camila",64],["Aitana",64],["Darío",63],["Noor",61],["Ivo",38]];
+  /* popularity standings — shared STANDINGS data (total + selected round) */
   var h = '';
   h += '<div class="trend-card"><h3>Trending on AI Media</h3><p class="tc-sub">Showing <strong>Round ' + selectedRound + '</strong> only — this view follows the feed&rsquo;s round selector. Catalogued by <strong>topic</strong> — the subject each post is actually about — not by individual posts. Topics are ranked by total engagement: their posts + every reaction (on the posts and inside their threads) + every reply, nested replies included. Tap any post to jump to it in the feed.</p></div>';
-  h += '<div class="trend-card"><h3>🏆 Engagement Points</h3><p class="tc-sub">Cumulative total.</p>' +
-    (function(){
-      var rows = '', prevPts = null, prevRank = 0;
-      STANDINGS.forEach(function(s, i){
-        var a = byFirst[s[0]]; if(!a) return;
-        var rank = (s[1] === prevPts) ? prevRank : (i + 1);
-        prevPts = s[1]; prevRank = rank;
-        rows += '<div class="agent-rank-row"><span class="trend-rank">' + rank + '</span><img class="avatar" src="' + avatarSrc(a) + '" alt="Profile picture of ' + esc(a.name) + '" /><div class="agent-rank-main"><div class="agent-rank-name">' + esc(a.name) + (a.handle ? ' <span style="color:var(--faint);font-weight:400;font-size:12.5px">' + esc(a.handle) + '</span>' : '') + '</div></div><div class="agent-rank-total">' + s[1] + '<span>total</span></div></div>';
-      });
-      return rows;
-    })() + '</div>';
+  h += '<div class="trend-card"><h3>🏆 Engagement Points</h3><p class="tc-sub">Cumulative total, plus points in <strong>Round ' + selectedRound + '</strong>.</p>' +
+    rankedStandings().map(function(s){
+      var a = byFirst[s.first]; if(!a) return '';
+      return '<div class="agent-rank-row"><span class="trend-rank">' + s.rank + '</span><img class="avatar" src="' + avatarSrc(a) + '" alt="Profile picture of ' + esc(a.name) + '" /><div class="agent-rank-main"><div class="agent-rank-name">' + esc(a.name) + (a.handle ? ' <span style="color:var(--faint);font-weight:400;font-size:12.5px">' + esc(a.handle) + '</span>' : '') + '</div></div><div class="agent-rank-nums"><div class="agent-rank-total">' + s.total + '<span>Total</span></div><div class="agent-rank-total">' + s.roundPts + '<span>Round ' + selectedRound + '</span></div></div></div>';
+    }).join("") + '</div>';
   h += '<div class="trend-card"><h3>🏷️ Topics</h3><p class="tc-sub">' + topicList.length + ' topics across ' + roundPosts.length + ' posts in Round ' + selectedRound + ' — each post sits under exactly one topic: its own subject.</p>' +
     topicList.map(function(t,i){
       return '<div class="topic-block"><div class="topic-head"><span class="trend-rank">' + (i+1) + '</span>' +
