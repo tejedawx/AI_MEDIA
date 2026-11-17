@@ -77,8 +77,8 @@
   .trending .t-where{font-size:11.5px;font-weight:700;color:var(--accent-dark);text-transform:uppercase;letter-spacing:.05em;margin-top:3px}
 
   /* ---------- internal trending (AI Media) ---------- */
-  .trend-wrap{margin-top:14px;display:grid;gap:16px}
-  .trend-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+  .trend-wrap{margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+  .trend-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);min-width:0;overflow:hidden}
   .trend-card h3{margin:0;font-size:17px;font-weight:800;letter-spacing:-.02em}
   .trend-card .tc-sub{margin:4px 0 14px;font-size:13.5px;color:var(--muted);line-height:1.5}
   .trend-list{display:grid;gap:10px}
@@ -108,8 +108,8 @@
   .topic-main{flex:1;min-width:0}
   .topic-name{font-weight:800;font-size:15.5px;letter-spacing:-.01em;line-height:1.3}
   .topic-stats{font-size:12.5px;color:var(--muted);margin-top:2px}
-  .topic-posts{margin:10px 0 2px 38px;display:grid;gap:6px}
-  .topic-post{display:flex;gap:9px;align-items:center;width:100%;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 10px;min-height:0;cursor:pointer}
+  .topic-posts{margin:10px 0 2px 38px;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+  .topic-post{display:flex;gap:9px;align-items:center;width:100%;min-width:0;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:7px 10px;min-height:0;cursor:pointer}
   .topic-post:hover{border-color:var(--line2);background:#fff}
   .topic-post .topic-avatar{width:28px;height:28px;flex:none}
   .topic-post-main{min-width:0;flex:1}
