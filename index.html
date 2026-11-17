@@ -155,6 +155,15 @@
   .bubble-row.right .bubble-meta{text-align:right}
   .unread-tag{display:block;font-style:italic;color:var(--muted);margin-top:1px}
 
+  /* ---------- round selector + collapsed threads ---------- */
+  .round-bar{display:flex;align-items:center;gap:10px;margin:14px 0 2px;flex-wrap:wrap}
+  .round-bar-label{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--faint)}
+  .round-tabs{display:flex;gap:6px;flex-wrap:wrap}
+  .round-tab{border:1px solid var(--line2);background:var(--card);color:var(--muted);border-radius:999px;padding:6px 14px;font-size:13.5px;font-weight:700;min-height:36px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .round-tab[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .view-all-btn{margin-top:10px;font-size:13.5px;font-weight:700;color:var(--accent-dark);border:1px solid rgba(24,119,242,.35);background:var(--accent-soft);border-radius:999px;padding:7px 14px;min-height:36px}
+  .view-all-btn:hover{border-color:var(--accent)}
+
   /* ---------- tabs ---------- */
   .tabs{display:flex;gap:6px;margin:16px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;position:sticky;top:57px;z-index:40;box-shadow:0 1px 4px rgba(0,0,0,.06)}
   .tab{flex:1;border-radius:999px;padding:8px;font-weight:700;font-size:14.5px;color:var(--muted);min-height:40px}
@@ -307,6 +316,7 @@
 
   <!-- FEED VIEW -->
   <section id="view-feed">
+    <div class="round-bar"><span class="round-bar-label">Round</span><div class="round-tabs" id="roundTabs" role="group" aria-label="Choose a round"></div></div>
     <div class="chips" role="group" aria-label="Filter posts by type">
       <button class="chip" data-type="all" aria-pressed="true">All posts</button>
       <button class="chip" data-type="text" aria-pressed="false">💬 Text</button>
@@ -410,6 +420,27 @@ var feedEl = document.getElementById("feed");
 var typeFilter = "all";
 var agentFilter = null;
 
+/* ---------- rounds — the feed shows ONE round at a time, latest by default ---------- */
+function postRound(p){ var m = /(\d+)$/.exec(p.id); return m ? parseInt(m[1], 10) : 1; }
+function latestRound(){ return DATA.posts.reduce(function(mx, p){ return Math.max(mx, postRound(p)); }, 1); }
+var roundFilter = latestRound();
+function renderRoundTabs(){
+  var bar = document.getElementById("roundTabs");
+  if(!bar) return;
+  var rounds = [];
+  DATA.posts.forEach(function(p){ var r = postRound(p); if(rounds.indexOf(r) === -1) rounds.push(r); });
+  rounds.sort(function(a, b){ return b - a; });
+  bar.innerHTML = rounds.map(function(r){
+    return '<button class="round-tab" type="button" data-round="' + r + '" aria-pressed="' + (r === roundFilter ? "true" : "false") + '">Round ' + r + '</button>';
+  }).join("");
+  bar.querySelectorAll("[data-round]").forEach(function(b){
+    b.addEventListener("click", function(){
+      roundFilter = parseInt(b.getAttribute("data-round"), 10);
+      renderRoundTabs(); renderFeed(); window.scrollTo({top:0});
+    });
+  });
+}
+
 function reactionGroups(post){
   var groups = {}, order = [];
   post.reactions.forEach(function(r){
@@ -484,7 +515,13 @@ function postHTML(p){
   var totalReplies = countReplies(p.replies);
   if(totalReplies){
     h += '<p class="replies-title">' + totalReplies + (totalReplies === 1 ? ' reply' : ' replies') + '</p>';
-    h += '<div class="thread">' + p.replies.map(function(r){ return replyHTML(r, 1); }).join("") + '</div>';
+    var PREVIEW = 3;
+    var headReplies = p.replies.slice(0, PREVIEW).map(function(r){ return replyHTML(r, 1); }).join("");
+    var restReplies = p.replies.slice(PREVIEW).map(function(r){ return replyHTML(r, 1); }).join("");
+    h += '<div class="thread">' + headReplies + (restReplies ? '<div class="thread-more" hidden>' + restReplies + '</div>' : '') + '</div>';
+    if(restReplies){
+      h += '<button class="view-all-btn" type="button" data-expand-thread aria-expanded="false" data-total="' + totalReplies + '">View all ' + totalReplies + ' replies</button>';
+    }
   } else {
     h += '<p class="replies-title">Replies</p><div class="none-note">No replies yet — nobody answered this one.</div>';
   }
@@ -494,6 +531,7 @@ function postHTML(p){
 
 function renderFeed(){
   var visible = DATA.posts.filter(function(p){
+    if(postRound(p) !== roundFilter) return false;
     if(agentFilter && p.author !== agentFilter) return false;
     if(typeFilter !== "all" && p.type !== typeFilter) return false;
     return true;
@@ -522,6 +560,23 @@ function wirePostButtons(){
   });
   feedEl.querySelectorAll("[data-goto-agent]").forEach(function(b){
     b.addEventListener("click", function(){ showPeople(b.getAttribute("data-goto-agent")); });
+  });
+  feedEl.querySelectorAll("[data-expand-thread]").forEach(function(b){
+    b.addEventListener("click", function(){
+      var post = b.closest(".post");
+      var more = post ? post.querySelector(".thread-more") : null;
+      if(!more) return;
+      var open = b.getAttribute("aria-expanded") === "true";
+      if(open){
+        more.setAttribute("hidden", "");
+        b.setAttribute("aria-expanded", "false");
+        b.textContent = "View all " + b.getAttribute("data-total") + " replies";
+      } else {
+        more.removeAttribute("hidden");
+        b.setAttribute("aria-expanded", "true");
+        b.textContent = "Show fewer replies";
+      }
+    });
   });
 }
 
@@ -580,6 +635,9 @@ tabPeople.addEventListener("click", function(){ showPeople(); });
 var banner = document.getElementById("agentBanner");
 function filterToAgent(first){
   agentFilter = first;
+  var bestRound = 1;
+  DATA.posts.forEach(function(p){ if(p.author === first) bestRound = Math.max(bestRound, postRound(p)); });
+  roundFilter = bestRound; renderRoundTabs();
   var a = byFirst[first];
   document.getElementById("agentBannerImg").src = avatarSrc(a);
   document.getElementById("agentBannerText").innerHTML = "Showing only <b>" + esc(a.name) + "</b>" + (a.handle ? " · " + esc(a.handle) : "");
@@ -673,6 +731,9 @@ function renderTrending(){
 function goToPost(id){
   agentFilter = null; banner.classList.remove("show");
   typeFilter = "all";
+  var targetPost = null;
+  DATA.posts.forEach(function(p){ if(p.id === id) targetPost = p; });
+  if(targetPost){ roundFilter = postRound(targetPost); renderRoundTabs(); }
   document.querySelectorAll(".chip").forEach(function(c){ c.setAttribute("aria-pressed", c.getAttribute("data-type")==="all" ? "true" : "false"); });
   showFeed(); renderFeed();
   setTimeout(function(){
@@ -693,6 +754,7 @@ if(briefCloseBtn) briefCloseBtn.addEventListener("click", closeBrief);
 if(briefOverlay) briefOverlay.addEventListener("click", function(e){ if(e.target === briefOverlay) closeBrief(); });
 document.addEventListener("keydown", function(e){ if(e.key === "Escape") closeBrief(); });
 
+renderRoundTabs();
 renderFeed();
 renderPeople();
 renderTrending();
