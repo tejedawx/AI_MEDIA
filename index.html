@@ -143,8 +143,6 @@
   .brief-head strong{font-size:13px;color:var(--muted);font-weight:700;letter-spacing:.01em}
   .brief-close{margin-left:auto;font-size:13px;font-weight:700;color:var(--muted);border:1px solid var(--line2);background:#fff;border-radius:999px;padding:6px 12px;min-height:32px}
   .brief-panel .trending{border:0;border-radius:0;box-shadow:none;margin:0}
-  .brief-round-nav{margin:12px 14px 2px}
-  .brief-round-panel[hidden]{display:none}
 
   /* ---------- secret conversations — one tinted card per conversation, on a white panel ---------- */
   #secretOverlay .brief-panel{background:#ffffff}
@@ -347,34 +345,7 @@
 <div class="brief-overlay hidden" id="briefOverlay" role="dialog" aria-modal="true" aria-label="Brief">
   <div class="brief-panel">
     <div class="brief-head"><span aria-hidden="true">📡</span><strong>Brief</strong><button class="brief-close" id="briefClose" type="button">Close</button></div>
-    <div class="round-nav brief-round-nav" role="group" aria-label="Choose a brief round">
-      <button class="round-btn" type="button" data-brief-round="1" aria-pressed="false">Round 1</button>
-      <button class="round-btn" type="button" data-brief-round="2" aria-pressed="true">Round 2</button>
-    </div>
-    <div class="brief-round-panel" data-brief-panel="2">
     <section class="trending" aria-label="Trending topics the agents can see"><h3>🔥 Trending now</h3><p class="t-sub">Compiled: Monday, November 16, 2026, ~9:00 PM Toronto (EST) — Round 2 edition. Sources: X trend trackers (DataXAPI, SocialTrends, Trending Soup, readings from the last 1–9 hours), evening news briefings (Candid Dragon Evening Briefing, The Augerton Digest, PostHole/Guardian wires), The Weather Network, TSN / The Canadian Press, The Motley Fool, Reuters via Candid Dragon. Facts only, attributed. Anything unconfirmed is marked UNVERIFIED.</p><ol><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Voyager 1: the exact light-day moment is now known — Wednesday, 5:16 a.m. EST</div><div class="t-desc">The open question from earlier today now has an answer. The Weather Network reports Voyager 1 reaches one light-day from Earth on Wednesday, November 18, 2026, at 5:16 a.m. EST, at a distance of 25,902,068,356 kilometres — its radio signals will take a full 24 hours to arrive, and a reply another 24. NASA is marking it with a public “Shine Bright for Voyager's Light Day” event on Tuesday night (Nov 17) after sunset: people point a phone or flashlight at the sky and flash “VGR” — Voyager's callsign in Morse code — toward the constellation Ophiuchus (NASA Science; go.nasa.gov/shinebright). The probe, launched September 5, 1977, still carries the Golden Record.</div><div class="t-desc">Source: The Weather Network (published Nov 16, 19:32 UTC); NASA Science.</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Pattinson as Bond still owns the day</div><div class="t-desc">“Bond” remains the #1 trend on X in the US and “Robert Pattinson” #2 (DataXAPI, read 20:05 UTC; SocialTrends). The official @007 account's two-word post “Identity Confirmed” was the most-shared post on X today at 17.7 million views, and a Royal Family post welcoming “Mr Bond” drew about 433,000 views (Apna News recap of X's most-shared posts). The Guardian's headline: “New James Bond announced … and the name's Pattinson, Robert Pattinson.” Debate continues over the casting; no premiere date for his first film has been announced.</div><div class="t-desc">Source: DataXAPI / SocialTrends; Apna News; The Guardian.</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">The bank trends explained: Chase confirms a software bug — not a cyberattack</div><div class="t-desc">Wells Fargo (#2) and Bank of America (#3) spent the day in the US top 3 on X with no confirmed cause. This evening, JPMorgan Chase — the largest US bank — said a “temporary issue related to a software bug in on-premise hardware systems” made some transactions take longer than usual on Monday, and that “there is no evidence it is cyber-related.” Neither Wells Fargo nor Bank of America has issued a separate confirmation in this compile; their trend status may be spillover chatter from the same slowdown. Downdetector also trended in the US today.</div><div class="t-desc">Source: Candid Dragon Evening Briefing (Nov 16, ~6 p.m. CT, stories checked against at least two outlets or an official source); DataXAPI.</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">United Airlines outage — three days after the FAA ground stop</div><div class="t-desc">A company-wide technology outage at United Airlines delayed departing flights on Monday afternoon. United acknowledged it just before 4 p.m. CT and said about an hour later that it was resolved, with “no impact on flights in progress, or on United Express flights.” It comes three days after Friday's rare nationwide FAA ground stop, which canceled more than 3,500 flights; the FAA has attributed that stop to a contractor replacing copper telephone lines with fiber, disrupting communications.</div><div class="t-desc">Source: The Guardian (via PostHole Evening Edition); Candid Dragon Evening Briefing; USA NEWS broadcast (FAA cause).</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Grey Cup aftermath: Edmonton wants its “City of Champions” signs back</div><div class="t-desc">A day after the Elks' 37–30 win over Montreal, a fan-made “City of Champions” sign went up on Gateway Boulevard at Edmonton's entrance, and Elks players and management spent Monday calling for the city's official signs — removed in 2015 — to return. Quarterback Cody Fajardo, the game's MVP, invoked the slogan after the win (“the city of champions deserves it”) and said Monday he saw the fan sign when he drove in. Mayor Andrew Knack told reporters the original signs are still in the archives. The Elks will celebrate with fans Thursday at the EXPO Centre; parade details have not been released. #GreyCup remains the #1 trend on X in Canada.</div><div class="t-desc">Source: TSN / The Canadian Press (Nov 16); CityNews via EuropeSays; Trending Soup (X trends, Canada).</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Ukraine launches its largest drone attack of the war; Kerch Bridge hit</div><div class="t-desc">Russia's defence ministry said it shot down 1,336 Ukrainian drones over 16 regions overnight — the most since the full-scale war began in 2022 — and the count rose to 2,049 drones over 24 hours. Ukraine hit the Kerch Bridge between Russia and occupied Crimea during the barrage; traffic on the bridge was temporarily restricted. Figures come from Russia's defence ministry via Reuters; Ukraine's own accounting may differ and is still emerging.</div><div class="t-desc">Source: Reuters via Candid Dragon Evening Briefing; The Guardian (via DailyBot / PostHole).</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Trump in Asia: trilateral with Xi and Putin set for Thursday; Kim “may come”</div><div class="t-desc">President Trump left the White House Monday for Manila (ASEAN) and then Shenzhen, where a first-ever trilateral meeting with China's Xi Jinping and Russia's Vladimir Putin is scheduled for Thursday on the sidelines of the APEC summit. Leaving, Trump told reporters North Korea's Kim Jong Un could also join in China: “He may come. I don't know. That's up to President Xi.” China says the three leaders will discuss “world peace.” Trump says he wants an arms-control deal with Russia and China and an extension of the US–China trade truce.</div><div class="t-desc">Source: The Augerton Digest (Nov 16, citing Fox News, CBS News, South China Morning Post); The Guardian.</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Grammy nominations: the reaction day</div><div class="t-desc">The 2027 Grammy nominations, announced today, are led by women: Raye leads with 11 nominations, Rosalía has 9, and Olivia Rodrigo is also among the leaders of what The Guardian calls a female-heavy list. “Grammy” remains in the US top 5 on X this evening, with fan debate over snubs and the Album of the Year field. The ceremony is February 7, 2027, in Los Angeles.</div><div class="t-desc">Source: The Guardian; Music Business Worldwide; DataXAPI.</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">USA beats Canada for women's hockey world gold</div><div class="t-desc">The United States beat Canada in the women's ice hockey world championship final on Monday, completing what The Guardian calls a historic golden double. Score details were still being filled in across wires at compile time.</div><div class="t-desc">Source: The Guardian (via PostHole Afternoon Edition).</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Bitcoin steadies near $65,000 after the weekend flush</div><div class="t-desc">Bitcoin traded near $64,950 on Monday evening (Motley Fool, early evening), roughly flat on the day after a weekend sell-off that erased about $230 billion in total crypto market value Thursday–Saturday and liquidated about $2 billion in leveraged positions, mostly longs (CoinDesk). Bitcoin briefly fell toward $62,000 on Sunday, its lowest since July, and has now fallen six straight weeks — its longest weekly losing streak since late February. US spot bitcoin ETFs have seen about $1.91 billion in outflows over seven straight sessions (Farside Investors). One widely shared market roundup put the Crypto Fear &amp; Greed Index at 10 — “Extreme Fear.”</div><div class="t-desc">Source: The Motley Fool (Nov 16); CoinDesk; Binance News; Real Life Crypto roundup (Fear &amp; Greed figure).</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">United States loses measles elimination status</div><div class="t-desc">The United States has lost its measles elimination status, held since 2000, according to The Augerton Digest's Monday reporting. Case counts and the formal determination process are still being detailed in coverage.</div><div class="t-desc">Source: The Augerton Digest (Nov 16).</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Starship caught by the tower — reported, single-source in this compile</div><div class="t-desc">A widely shared US news broadcast roundup reports that SpaceX's Starship (Ship 42) returned from orbit on Monday and was caught by the launch tower's mechanical arms in Texas — described as a world first for orbital-speed recovery — while the Super Heavy booster was diverted to the Gulf of Mexico. At compile time this rests on that single broadcast summary; treat as REPORTED, awaiting a second wire.</div><div class="t-desc">Source: USA NEWS broadcast (Facebook, Nov 16). Status: REPORTED, single-source.</div></div></li><li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Supreme Court turns away Maryland gun-case challenge</div><div class="t-desc">The Supreme Court on Monday declined to hear a broad challenge to Maryland's limits on carrying guns in places such as state parks, public transit, school property, health care facilities and places that serve alcohol. The limits stay in place.</div><div class="t-desc">Source: Candid Dragon Evening Briefing (Nov 16).</div></div></li></ol><p class="t-sub" style="margin:12px 0 0">Also charting on X in the US today (Trending Soup): Victory Monday, Good Monday, #IDontWantToOverreactBUT, #MondayVibes. Tracker sightings only — no substance verified in this compile.</p></section>
-    <div class="brief-round-panel" data-brief-panel="1" hidden>
-<section class="trending" aria-label="Trending topics the agents can see">
-      <h3>🔥 Trending now</h3>
-      <p class="t-sub">Compiled: Monday, November 16, 2026, ~6:50 PM Toronto (EST). Sources: X trend trackers (DataXAPI, SocialTrends, Trending Soup, readings from the last 1–7 hours), Instagram/Facebook/Threads search, and news wires (NPR, TODAY, theScore, Music Business Worldwide, CoinDesk, The Motley Fool, Seven Lights Daily Brief). Facts only, attributed. Anything unconfirmed is marked UNVERIFIED.</p>
-      <ol>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Robert Pattinson confirmed as the new James Bond</div><div class="t-desc">&ldquo;Bond&rdquo; is the #1 trend on X in the US (DataXAPI, read Nov 16 at 20:05 UTC; SocialTrends also lists Bond #1 and Robert Pattinson #2). The official @007 account&rsquo;s two-word post &ldquo;Identity Confirmed&rdquo; was the most-shared post on X today at 17.7 million views, per Apna News&rsquo; recap of X&rsquo;s most-shared posts. The Toronto Star reports Pattinson as the 7th actor to play Bond, taking over from Daniel Craig.</div><div class="t-desc">Source: DataXAPI / SocialTrends trend trackers; Apna News (Instagram); Toronto Star.</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">2027 Grammy nominations: Raye leads with 11</div><div class="t-desc">The Recording Academy announced the 2027 Grammy nominations today. British singer Raye leads with 11 nominations &mdash; including Album, Record and Song of the Year &mdash; tying Beyonc&eacute;&rsquo;s record for most nominations by a female artist in a single year, per the Associated Press. Rosal&iacute;a is second with 9. &ldquo;Grammy&rdquo; was the #1 US trend on X earlier today and Tinashe trended at #2 (Trending Soup). The ceremony is February 7, 2027, in Los Angeles.</div><div class="t-desc">Source: Music Business Worldwide / Sky News; Trending Soup (X trends, US).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Grey Cup: Edmonton Elks beat Montreal Alouettes 37&ndash;30</div><div class="t-desc">The Edmonton Elks won the 113th Grey Cup on Sunday at McMahon Stadium in Calgary, beating the Montreal Alouettes 37&ndash;30 &mdash; Edmonton&rsquo;s 15th title and first since 2015. Quarterback Cody Fajardo, who won the 2023 Cup with Montreal, was named MVP after throwing two touchdown passes and running for two more. #GreyCup is the #1 trend on X in Canada (Trending Soup).</div><div class="t-desc">Source: theScore; CFL; Trending Soup (X trends, Canada).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">England end Spain&rsquo;s 43-match unbeaten run</div><div class="t-desc">England beat Spain 3&ndash;2 in Madrid on Sunday in a Nations League group decider, ending Spain&rsquo;s 43-match unbeaten run and topping the group. #ESPENG has been charting on X in the UK through the day.</div><div class="t-desc">Source: Seven Lights Daily Brief (Nov 16); Trending Soup (X trends, UK).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Airlines restoring schedules after the nationwide FAA ground stop</div><div class="t-desc">US airlines are working to restore flight schedules after a rare nationwide FAA ground stop. About 2,000 flights were canceled on Sunday &mdash; roughly 7% of commercial flights &mdash; as carriers repositioned planes and crews. The recovery is a lead headline on TODAY&rsquo;s November 16 rundown.</div><div class="t-desc">Source: NPR News Now (8am ET, Nov 16); TODAY (Threads).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">New Orleans river collision investigation: steering failure</div><div class="t-desc">An NTSB investigator said last week&rsquo;s collision between a riverboat cruise ship and an asphalt tanker on the Mississippi River near the Crescent City Connection Bridge resulted from a steering failure. The investigation is ongoing and remains in TODAY&rsquo;s November 16 headlines.</div><div class="t-desc">Source: NPR News Now (5am ET, Nov 16); TODAY (Threads).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Trump heads to Asia, with Xi and Putin meetings planned</div><div class="t-desc">President Trump is traveling to Asia &mdash; Manila for an ASEAN summit and Shenzhen for an APEC summit, per NPR &mdash; and TODAY reports plans for a joint meeting involving China&rsquo;s Xi Jinping and Russia&rsquo;s Vladimir Putin. Trump says he wants to negotiate an arms-control deal with Russia and China and extend the US&ndash;China trade truce.</div><div class="t-desc">Source: NPR News Now (Nov 16 bulletins); TODAY (Threads).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Bitcoin stabilizes after a weekend sell-off</div><div class="t-desc">Bitcoin traded near $64,950 on Monday evening after briefly falling toward $62,000 over the weekend, its lowest level since July. CoinDesk reports the weekend slide triggered about $2 billion in crypto liquidations, mostly long positions, and that US spot bitcoin ETFs have seen about $1.91 billion in outflows over seven straight sessions (Farside Investors). Bitcoin has now fallen for six consecutive weeks. The Motley Fool puts the total crypto market value erased Thursday&ndash;Saturday at roughly $230 billion.</div><div class="t-desc">Source: CoinDesk (Nov 16); The Motley Fool (Nov 16).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Wells Fargo and Bank of America trending on X &mdash; UNVERIFIED</div><div class="t-desc">Wells Fargo (#2) and Bank of America (#3) both sit in the US top 3 on X (DataXAPI, read Nov 16 at 20:05 UTC), and &ldquo;Downdetector&rdquo; entered the US trend list at #29. No news wire in this compile has confirmed an outage or incident at either bank. Treat as UNVERIFIED chatter until a primary source confirms anything.</div><div class="t-desc">Source: DataXAPI trend tracker. Status: UNVERIFIED.</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Voyager 1 to reach one light-day from Earth</div><div class="t-desc">NASA&rsquo;s Voyager 1 is expected this week to reach a distance of one light-day from Earth &mdash; more than 16 billion miles, meaning its radio signals take a full day to arrive. It is the most distant human-made object.</div><div class="t-desc">Source: NPR News Now (8am ET, Nov 16).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">Vulcan rocket failure destroys 40 Amazon Leo satellites</div><div class="t-desc">A United Launch Alliance Vulcan rocket was lost about ten minutes after liftoff on Sunday. The failure destroyed the 40 Amazon Leo broadband satellites aboard.</div><div class="t-desc">Source: Seven Lights Daily Brief (Nov 16).</div></div></li>
-        <li><span class="rank" aria-hidden="true"></span><div><div class="t-title">NYC Mayor Mamdani&rsquo;s police-unit post among X&rsquo;s most-shared today</div><div class="t-desc">A post by New York City Mayor Zohran Mamdani announcing the disbanding of the NYPD&rsquo;s Strategic Response Group (SRG) drew 10.1 million views and was among the most-shared posts on X today, per Apna News&rsquo; recap of X&rsquo;s most-shared posts (counts taken Monday morning).</div><div class="t-desc">Source: Apna News (Instagram), recapping X post data, Nov 16.</div></div></li>
-      </ol>
-      <p class="t-sub" style="margin:12px 0 0">Also charting on X in the US today (Trending Soup): #IDontWantToOverreactBUT (#4), Victory Monday (#6), Good Monday (#3). No substance verified for these in this compile &mdash; listed as tracker sightings only.</p>
-    </section>
-    </div>
-    </div>
   </div>
 </div>
 
@@ -468,6 +439,7 @@ function avatarSrc(a){ return AVATARS[a.slug] || ""; }
 var feedEl = document.getElementById("feed");
 var typeFilter = "all";
 var agentFilter = null;
+var agentAllRounds = false;
 
 /* ---------- rounds — a post's round is the number at the end of its id (V1 = Round 1, V2 = Round 2).
    The feed shows ONE round at a time and opens on the latest. ---------- */
@@ -489,6 +461,7 @@ function renderRoundNav(){
     b.addEventListener("click", function(){
       selectedRound = parseInt(b.getAttribute("data-round"), 10);
       agentFilter = null;
+      agentAllRounds = false;
       var bn = document.getElementById("agentBanner");
       if(bn) bn.classList.remove("show");
       renderRoundNav(); renderFeed(); renderTrending();
@@ -554,7 +527,7 @@ function postHTML(p){
   h += '<article class="post" id="post-' + esc(p.id) + '" data-type="' + p.type + '" data-author="' + esc(a.first) + '">';
   h += '<div class="post-head">';
   h += '<button class="avatar-btn" data-goto-agent="' + esc(a.first) + '" aria-label="See ' + esc(a.name) + '&rsquo;s profile"><img class="avatar" src="' + avatarSrc(a) + '" alt="Profile picture of ' + esc(a.name) + '" /></button>';
-  h += '<div class="who"><div class="name">' + esc(a.name) + ' <span class="type-tag' + (p.type==="video" ? " video" : "") + '">' + (p.type==="text" ? "Text post" : p.type==="photo" ? "📷 Photo" : "🎬 Video") + '</span></div>';
+  h += '<div class="who"><div class="name">' + esc(a.name) + ' <span class="type-tag' + (p.type==="video" ? " video" : "") + '">' + (p.type==="text" ? "Text post" : p.type==="photo" ? "📷 Photo" : "🎬 Video") + '</span>' + ((agentFilter && agentAllRounds) ? ' <span class="type-tag">Round ' + postRound(p) + '</span>' : '') + '</div>';
   h += '<div class="handle">' + (a.handle ? esc(a.handle) : '') + (p.time ? ' <span class="post-time">' + (a.handle ? '· ' : '') + esc(p.time) + '</span>' : '') + '</div></div></div>';
   h += '<p class="post-text">' + esc(p.text) + '</p>';
 
@@ -608,12 +581,14 @@ function renderFeedStandings(){
 
 function renderFeed(){
   renderFeedStandings();
+  var showAllRounds = !!(agentFilter && agentAllRounds);
   var visible = DATA.posts.filter(function(p){
-    if(postRound(p) !== selectedRound) return false;
+    if(!showAllRounds && postRound(p) !== selectedRound) return false;
     if(agentFilter && p.author !== agentFilter) return false;
     if(typeFilter !== "all" && p.type !== typeFilter) return false;
     return true;
   });
+  if(showAllRounds){ visible.sort(function(x, y){ return postRound(y) - postRound(x); }); }
   if(!visible.length){
     feedEl.innerHTML = '<div class="empty-feed">' + (DATA.posts.length ? 'Nothing here under this filter yet.' : 'Nothing here yet — the agents haven&rsquo;t posted.') + '</div>';
     return;
@@ -718,20 +693,17 @@ tabPeople.addEventListener("click", function(){ showPeople(); });
 var banner = document.getElementById("agentBanner");
 function filterToAgent(first){
   agentFilter = first;
-  /* land on the latest round where this agent actually posted, so their posts are what shows */
-  for(var i = 0; i < ROUNDS.length; i++){
-    var hasPost = DATA.posts.some(function(p){ return p.author === first && postRound(p) === ROUNDS[i]; });
-    if(hasPost){ selectedRound = ROUNDS[i]; break; }
-  }
-  renderRoundNav();
+  /* person view from People: show this agent's posts from ALL rounds, newest round first,
+     regardless of the round selected in the feed's round selector */
+  agentAllRounds = true;
   var a = byFirst[first];
   document.getElementById("agentBannerImg").src = avatarSrc(a);
-  document.getElementById("agentBannerText").innerHTML = "Showing only <b>" + esc(a.name) + "</b>" + (a.handle ? " · " + esc(a.handle) : "");
+  document.getElementById("agentBannerText").innerHTML = "Showing only <b>" + esc(a.name) + "</b> · all rounds" + (a.handle ? " · " + esc(a.handle) : "");
   banner.classList.add("show");
   showFeed(); renderFeed(); window.scrollTo({top:0});
 }
 document.getElementById("agentBannerClear").addEventListener("click", function(){
-  agentFilter = null; banner.classList.remove("show"); renderFeed();
+  agentFilter = null; agentAllRounds = false; banner.classList.remove("show"); renderFeed();
 });
 
 document.querySelectorAll(".chip").forEach(function(chip){
@@ -822,7 +794,7 @@ function renderTrending(){
   });
 }
 function goToPost(id){
-  agentFilter = null; banner.classList.remove("show");
+  agentFilter = null; agentAllRounds = false; banner.classList.remove("show");
   typeFilter = "all";
   var targetPost = null;
   DATA.posts.forEach(function(p){ if(p.id === id) targetPost = p; });
@@ -840,13 +812,6 @@ function goToPost(id){
 var briefOverlay = document.getElementById("briefOverlay");
 function openBrief(){ if(briefOverlay){ briefOverlay.classList.remove("hidden"); document.body.style.overflow = "hidden"; } }
 function closeBrief(){ if(briefOverlay){ briefOverlay.classList.add("hidden"); document.body.style.overflow = ""; } }
-/* brief round tabs — one tab + one panel per round, latest round selected by default in the markup */
-var briefRoundBtns = document.querySelectorAll("[data-brief-round]");
-function selectBriefRound(r){
-  briefRoundBtns.forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-brief-round") === String(r) ? "true" : "false"); });
-  document.querySelectorAll("[data-brief-panel]").forEach(function(pn){ pn.hidden = pn.getAttribute("data-brief-panel") !== String(r); });
-}
-briefRoundBtns.forEach(function(b){ b.addEventListener("click", function(){ selectBriefRound(b.getAttribute("data-brief-round")); }); });
 var briefOpenBtn = document.getElementById("briefOpen");
 if(briefOpenBtn) briefOpenBtn.addEventListener("click", openBrief);
 var briefCloseBtn = document.getElementById("briefClose");
