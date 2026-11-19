@@ -185,6 +185,18 @@
   #secretOverlay .brief-panel{background:#ffffff}
   .secret-note{margin:0;padding:12px 16px 2px;font-size:13px;color:var(--faint);line-height:1.5;background:#ffffff}
   .secret-list{padding:14px 16px 20px;display:grid;gap:22px;background:#ffffff}
+  .secret-list.is-list{gap:10px}
+  .secret-list.is-detail{gap:12px}
+  .secret-pair-entry{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:#eceff3;border:1px solid #ccd0d5;border-radius:14px;padding:13px 14px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06);min-height:0}
+  .secret-pair-entry:hover{background:#e3e8ef;border-color:#b9c0ca}
+  .secret-pair-entry:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .secret-pair-main{flex:1;min-width:0}
+  .secret-pair-names{display:block;font-weight:700;font-size:14.5px;line-height:1.3;color:var(--text)}
+  .secret-pair-meta{display:flex;flex-wrap:wrap;gap:2px 8px;font-size:12.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .secret-pair-arrow{flex:none;color:var(--faint);font-size:20px;line-height:1;font-weight:300}
+  .secret-back{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:700;color:var(--accent-dark);background:var(--accent-soft);border:1px solid rgba(24,119,242,.32);border-radius:999px;padding:7px 14px 7px 11px;cursor:pointer;min-height:36px;justify-self:start}
+  .secret-back:hover{background:rgba(24,119,242,.16)}
+  .secret-back:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .secret-thread{background:#eceff3;border:1px solid #ccd0d5;border-radius:16px;padding:16px 16px 15px;box-shadow:0 2px 6px rgba(0,0,0,.10),0 12px 28px rgba(0,0,0,.10)}
   .secret-thread-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:11px;border-bottom:1px solid #ccd0d5}
   .secret-avatars{display:flex;flex:none}
@@ -1073,34 +1085,78 @@ var SECRET_THREADS = [{"pair": ["Valeria", "Mara"], "messages": [{"from": "Valer
 (function(){
   var overlay = document.getElementById("secretOverlay");
   var list = document.getElementById("secretThreads");
-  function renderSecret(){
-    if(!list || list.getAttribute("data-done")) return;
-    list.setAttribute("data-done", "1");
+  var selectedSecret = null;
+  function threadLastRound(t){
+    var max = null;
+    t.messages.forEach(function(m){ if(typeof m.round === "number"){ if(max === null || m.round > max) max = m.round; } });
+    return max;
+  }
+  function threadCardHtml(t){
+    var a = byFirst[t.pair[0]], b = byFirst[t.pair[1]];
+    var h = '<section class="secret-thread"><div class="secret-thread-head"><span class="secret-avatars">' +
+      '<img src="' + avatarSrc(a) + '" alt="Profile picture of ' + esc(a.name) + '" />' +
+      '<img src="' + avatarSrc(b) + '" alt="Profile picture of ' + esc(b.name) + '" /></span>' +
+      '<div class="secret-thread-names"><strong>' + esc(a.name) + ' &amp; ' + esc(b.name) + '</strong>' +
+      '<span>' + t.messages.length + (t.messages.length === 1 ? ' message' : ' messages') + '</span></div></div>';
+    h += '<div class="secret-msgs">';
+    t.messages.forEach(function(m){
+      var right = m.from === t.pair[1];
+      h += '<div class="bubble-row' + (right ? ' right' : '') + '"><div class="bubble-wrap">' +
+        '<div class="bubble">' + esc(m.text) + '</div>' +
+        '<div class="bubble-meta">' + esc(m.from) + (m.round ? ' \u00b7 Round ' + m.round : '') + (m.pass ? ' \u00b7 Pass ' + m.pass : '') + ' \u00b7 ' + esc(m.time) +
+        '</div></div></div>';
+    });
+    h += '</div></section>';
+    return h;
+  }
+  function renderSecretList(){
+    if(!list) return;
+    selectedSecret = null;
+    list.classList.remove("is-detail");
+    list.classList.add("is-list");
     if(!SECRET_THREADS.length){
       list.innerHTML = '<p class="none-note">No private conversations yet.</p>';
       return;
     }
     var h = "";
-    SECRET_THREADS.forEach(function(t){
+    SECRET_THREADS.forEach(function(t, idx){
       var a = byFirst[t.pair[0]], b = byFirst[t.pair[1]];
-      h += '<section class="secret-thread"><div class="secret-thread-head"><span class="secret-avatars">' +
+      var lastRound = threadLastRound(t);
+      var countLabel = t.messages.length + (t.messages.length === 1 ? ' message' : ' messages');
+      h += '<button class="secret-pair-entry" type="button" data-secret-idx="' + idx + '">' +
+        '<span class="secret-avatars">' +
         '<img src="' + avatarSrc(a) + '" alt="Profile picture of ' + esc(a.name) + '" />' +
         '<img src="' + avatarSrc(b) + '" alt="Profile picture of ' + esc(b.name) + '" /></span>' +
-        '<div class="secret-thread-names"><strong>' + esc(a.name) + ' &amp; ' + esc(b.name) + '</strong>' +
-        '<span>' + t.messages.length + (t.messages.length === 1 ? ' message' : ' messages') + '</span></div></div>';
-      h += '<div class="secret-msgs">';
-      t.messages.forEach(function(m){
-        var right = m.from === t.pair[1];
-        h += '<div class="bubble-row' + (right ? ' right' : '') + '"><div class="bubble-wrap">' +
-          '<div class="bubble">' + esc(m.text) + '</div>' +
-          '<div class="bubble-meta">' + esc(m.from) + (m.round ? ' · Round ' + m.round : '') + (m.pass ? ' · Pass ' + m.pass : '') + ' · ' + esc(m.time) +
-          '</div></div></div>';
-      });
-      h += '</div></section>';
+        '<span class="secret-pair-main"><span class="secret-pair-names">' + esc(a.name) + ' &amp; ' + esc(b.name) + '</span>' +
+        '<span class="secret-pair-meta"><span>' + countLabel + '</span>' +
+        (lastRound !== null ? '<span aria-hidden="true">\u00b7</span><span>Last updated \u00b7 Round ' + lastRound + '</span>' : '') +
+        '</span></span>' +
+        '<span class="secret-pair-arrow" aria-hidden="true">\u203a</span></button>';
     });
     list.innerHTML = h;
   }
-  function openSecret(){ renderSecret(); if(overlay){ overlay.classList.remove("hidden"); document.body.style.overflow = "hidden"; } }
+  function renderSecretThread(idx){
+    if(!list) return;
+    var t = SECRET_THREADS[idx];
+    if(!t){ renderSecretList(); return; }
+    selectedSecret = idx;
+    list.classList.remove("is-list");
+    list.classList.add("is-detail");
+    list.innerHTML = '<button class="secret-back" type="button" data-secret-back="1">\u2190 All conversations</button>' + threadCardHtml(t);
+  }
+  function renderSecret(){ renderSecretList(); }
+  if(list){
+    list.addEventListener("click", function(e){
+      var backBtn = e.target.closest ? e.target.closest("[data-secret-back]") : null;
+      if(backBtn){ renderSecretList(); if(overlay) overlay.scrollTop = 0; return; }
+      var entry = e.target.closest ? e.target.closest("[data-secret-idx]") : null;
+      if(entry){
+        var idx = parseInt(entry.getAttribute("data-secret-idx"), 10);
+        if(!isNaN(idx)){ renderSecretThread(idx); if(overlay) overlay.scrollTop = 0; }
+      }
+    });
+  }
+  function openSecret(){ renderSecretList(); if(overlay){ overlay.classList.remove("hidden"); document.body.style.overflow = "hidden"; overlay.scrollTop = 0; } }
   function closeSecret(){ if(overlay){ overlay.classList.add("hidden"); document.body.style.overflow = ""; } }
   var secretOpenBtn = document.getElementById("secretOpen");
   if(secretOpenBtn) secretOpenBtn.addEventListener("click", openSecret);
