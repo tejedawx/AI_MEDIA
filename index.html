@@ -1487,7 +1487,7 @@ function renderAudience(){
         return;
       }
       audPropose(topic, byIn ? byIn.value.trim() : "");
-      if(confirm){ confirm.textContent = "Received — it appears on the board at the next update if it is among the day's first 12."; confirm.classList.remove("hidden"); }
+      if(confirm){ confirm.textContent = "Received — it's on the board now. Voting is open until midnight."; confirm.classList.remove("hidden"); }
       if(topicIn) topicIn.value = "";
       if(byIn) byIn.value = "";
     });
