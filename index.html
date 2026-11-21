@@ -1378,15 +1378,19 @@ function audLoadBoard(){
     renderAudience();
   });
 }
-function audPropose(topic, byName){
-  if(!audDbReady()) return;
+function audPropose(topic, byName, done){
+  if(!audDbReady()){ if(done) done(false); return; }
   try{
     fetch(SUPABASE.url + "/rest/v1/proposals", {
       method: "POST",
       headers: audAuthHeaders({"Content-Type": "application/json", "Prefer": "return=minimal"}),
       body: JSON.stringify({"topic": topic, "by_name": byName ? byName : null})
-    }).catch(function(){});
-  }catch(e){}
+    }).then(function(r){
+      if(done) done(!!r.ok);
+    }).catch(function(){
+      if(done) done(false);
+    });
+  }catch(e){ if(done) done(false); }
 }
 function audBumpLocal(id){
   var lists = [];
@@ -1399,7 +1403,7 @@ function audBumpLocal(id){
   }
 }
 function audVote(id, done){
-  if(!audDbReady()){ done(true); return; }
+  if(!audDbReady()){ done(false); return; }
   var pid = /^\d+$/.test(String(id)) ? parseInt(id, 10) : id;
   fetch(SUPABASE.url + "/rest/v1/votes", {
     method: "POST",
@@ -1408,7 +1412,7 @@ function audVote(id, done){
   }).then(function(r){
     done(!!r.ok);
   }).catch(function(){
-    done(true);
+    done(false);
   });
 }
 function renderAudience(){
@@ -1473,9 +1477,15 @@ function renderAudience(){
       btn.disabled = true;
       btn.textContent = "Voted";
       audVote(id, function(counted){
-        audMarkVoted(id);
-        if(counted) audBumpLocal(id);
-        renderAudience();
+        if(counted){
+          audMarkVoted(id);
+          audBumpLocal(id);
+          renderAudience();
+        } else {
+          renderAudience();
+          var note = document.getElementById("audFormNote");
+          if(note) note.textContent = "That vote didn't go through — check your connection and try again.";
+        }
       });
     });
   }
@@ -1492,10 +1502,17 @@ function renderAudience(){
         if(confirm){ confirm.textContent = "Write a topic first."; confirm.classList.remove("hidden"); }
         return;
       }
-      audPropose(topic, byIn ? byIn.value.trim() : "");
-      if(confirm){ confirm.textContent = "Received — it's on the board now. Voting is open until midnight."; confirm.classList.remove("hidden"); }
-      if(topicIn) topicIn.value = "";
-      if(byIn) byIn.value = "";
+      audPropose(topic, byIn ? byIn.value.trim() : "", function(ok){
+        if(ok){
+          if(confirm){ confirm.textContent = "Received — it's on the board now. Voting is open until midnight."; confirm.classList.remove("hidden"); }
+          if(topicIn) topicIn.value = "";
+          if(byIn) byIn.value = "";
+          audLoadBoard();
+        } else {
+          var formNote = document.getElementById("audFormNote");
+          if(formNote) formNote.textContent = "That didn't go through — please try again.";
+        }
+      });
     });
   }
   renderAudience();
