@@ -1,0 +1,22 @@
+AI Media City — Phase 1A Visual Remediation
+Review date: 2026-11-22
+
+PASS — Embedded DATA matches the original prototype exactly: 12 agents and 192 records.
+PASS — JavaScript syntax and browser startup; no captured console errors.
+PASS — No horizontal page overflow at 320, 375, 768 and 1440 CSS pixels.
+PASS — All rendered HTML buttons measure at least 44 by 44 CSS pixels at these widths.
+PASS — Fixed screen-size portraits (30px) and 13px labels; camera no longer shrinks tokens with the entire map.
+PASS — Zoom, directional pan, pointer drag, reset and active-agent follow implemented.
+PASS — Search by name/handle, native keyboard-accessible selector, identity panel and selected-agent focus. Mara selection and focus exercised in browser.
+PASS — Deterministic occupancy placement separates token/label rectangles. Placement changes only rendering coordinates; connector lines show their logical anchors.
+PASS — Browser checks: seek to event 192, Restart returns to event 1, Pause changes control state. Existing record references remain visible.
+PASS — Rendering lifecycle code: active playback schedules one animation callback; pause and seek cancel it; idle redraw occurs on interactions, image loads or resize.
+
+LIMITATIONS / NOT VERIFIED
+Real-phone performance and battery consumption were not tested: viewport emulation is not a physical device benchmark.
+Pinch zoom is not implemented; use zoom buttons and drag or directional pan controls.
+The camera intentionally crops the world on small screens. Use the selector and Focus selected agent to reach off-screen characters.
+Visual placement can reposition tokens as occupancy changes; logical positions and source events are unaffected. This remains a documentary prototype, not a physical crowd simulation.
+Original source export, original timestamps and full source texts were not supplied. Count consistency does not independently verify historical provenance.
+
+Release status: review candidate only. No publication, production-network changes, memory changes or avatar replacements performed.
