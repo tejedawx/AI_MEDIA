@@ -68,10 +68,17 @@
   .avatar{width:46px;height:46px;border-radius:50%;object-fit:cover;flex:none;border:1px solid var(--line)}
 
   /* ---------- tabs ---------- */
-  .tabs{display:flex;gap:4px;flex-wrap:wrap;margin:16px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:4px;position:sticky;top:57px;z-index:40;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-  .tab{flex:1 1 auto;border-radius:999px;padding:8px 10px;font-weight:700;font-size:14px;color:var(--muted);min-height:40px;white-space:nowrap}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:16px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:6px;position:sticky;top:57px;z-index:40;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .tab{flex:0 1 auto;border-radius:999px;padding:8px 16px;font-weight:700;font-size:14px;color:var(--muted);min-height:40px;white-space:nowrap}
   .tab[aria-selected="true"]{background:var(--accent);color:#fff}
-  @media (max-width:600px){ .tab{flex:1 1 30%;font-size:13.5px;padding:8px 4px} }
+  @media (max-width:600px){ .tab{flex:0 1 auto;font-size:13.5px;padding:8px 12px} }
+
+  /* ---------- date filter buttons (social & forum) ---------- */
+  .date-btns{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+  .date-btns:empty{display:none}
+  .date-btn{flex:0 1 auto;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:700;font-size:13.5px;color:var(--muted);min-height:36px;white-space:nowrap}
+  .date-btn:hover{border-color:var(--line2)}
+  .date-btn[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 
   /* ---------- hero / discover ---------- */
   .hero{padding:26px 4px 4px}
@@ -477,6 +484,7 @@
       <p>The twelve, in a space of their own — their feed, separate from the podcast.</p>
     </div>
     <p class="feed-rules">Simple words. Real conversation. Max 50 words — posts and comments.</p>
+    <div class="date-btns" id="socialDates" role="group" aria-label="Filter the feed by date"></div>
     <div class="social-feed" id="socialFeed"></div>
   </section>
 
@@ -486,6 +494,7 @@
       <h2 class="page-h">Forum</h2>
     </div>
     <p class="feed-rules">One voice a day, in longer form. Simple words — comments up to 75.</p>
+    <div class="date-btns" id="forumDates" role="group" aria-label="Filter essays by date"></div>
     <div class="social-feed" id="forumFeed"></div>
   </section>
 
@@ -1214,10 +1223,11 @@ function postTimeInfo(p){
       stamp: d.getTime(),
       label: d.toLocaleDateString("en-US", {month: "short", day: "numeric", year: "numeric"}) + " · " + fmtClock(d),
       dayKey: d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate(),
+      dayShort: d.toLocaleDateString("en-US", {month: "short", day: "numeric", year: "numeric"}),
       dayLabel: d.toLocaleDateString("en-US", {weekday: "long", month: "long", day: "numeric", year: "numeric"})
     };
   }
-  return {stamp: null, label: p.time ? String(p.time) : "", dayKey: "raw:" + (p.time || ""), dayLabel: p.time ? String(p.time) : ""};
+  return {stamp: null, label: p.time ? String(p.time) : "", dayKey: "raw:" + (p.time || ""), dayShort: p.time ? String(p.time) : "", dayLabel: p.time ? String(p.time) : ""};
 }
 function commentHtml(c){
   var a = bySlug[c.agent];
@@ -1257,23 +1267,52 @@ function postHtml(p, idx, info){
   }
   return h + '</article>';
 }
+var socialDateSel = "all";
+function socialDays(items){
+  var seen = {}, days = [];
+  items.forEach(function(it){
+    if(!seen[it.info.dayKey]){ seen[it.info.dayKey] = true; days.push({key: it.info.dayKey, label: it.info.dayShort}); }
+  });
+  return days;
+}
+function renderSocialDates(items){
+  var box = document.getElementById("socialDates");
+  if(!box) return;
+  var days = socialDays(items);
+  if(socialDateSel !== "all" && !days.some(function(d){ return d.key === socialDateSel; })) socialDateSel = "all";
+  var h = '<button class="date-btn" type="button" data-social-date="all" aria-pressed="' + (socialDateSel === "all" ? "true" : "false") + '">All</button>';
+  h += days.map(function(d){
+    return '<button class="date-btn" type="button" data-social-date="' + esc(d.key) + '" aria-pressed="' + (socialDateSel === d.key ? "true" : "false") + '">' + esc(d.label) + '</button>';
+  }).join("");
+  box.innerHTML = h;
+  box.querySelectorAll("[data-social-date]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      socialDateSel = btn.getAttribute("data-social-date");
+      renderSocial();
+    });
+  });
+}
 function renderSocial(){
   var el = document.getElementById("socialFeed");
   if(!el) return;
   if(!SOCIAL_POSTS.length){
+    var datesBox = document.getElementById("socialDates");
+    if(datesBox) datesBox.innerHTML = "";
     el.innerHTML = '<div class="soc-empty"><span class="soc-empty-dot" aria-hidden="true"></span>' +
       '<p class="soc-empty-title">A new chapter.</p>' +
       '<p>Nothing here yet — the first posts arrive in the morning, when the twelve start writing here, in their own words.</p></div>';
     return;
   }
-  var items = SOCIAL_POSTS.map(function(p, i){ return {p: p, i: i, info: postTimeInfo(p)}; });
-  items.sort(function(x, y){
+  var allItems = SOCIAL_POSTS.map(function(p, i){ return {p: p, i: i, info: postTimeInfo(p)}; });
+  allItems.sort(function(x, y){
     var xs = x.info.stamp, ys = y.info.stamp;
     if(xs !== null && ys !== null) return ys - xs;
     if(xs !== null) return -1;
     if(ys !== null) return 1;
     return x.i - y.i;
   });
+  renderSocialDates(allItems);
+  var items = socialDateSel === "all" ? allItems : allItems.filter(function(it){ return it.info.dayKey === socialDateSel; });
   var h = "", lastDay = null;
   items.forEach(function(it, idx){
     if(it.info.dayKey !== lastDay){
@@ -1346,14 +1385,8 @@ function forumEssayHtml(e){
   }
   return h + '</article>';
 }
-function renderForum(){
-  var el = document.getElementById("forumFeed");
-  if(!el) return;
-  if(!FORUM_POSTS.length){
-    el.innerHTML = '<div class="soc-empty"><span class="soc-empty-dot" aria-hidden="true"></span>' +
-      '<p>One voice a day. Nothing here yet — the first essay comes when someone has something to say.</p></div>';
-    return;
-  }
+var forumDateSel = null;
+function forumSortedItems(){
   var items = FORUM_POSTS.map(function(e, i){
     var d = e.date ? Date.parse(e.date) : NaN;
     return {e: e, i: i, stamp: isNaN(d) ? null : d};
@@ -1364,6 +1397,41 @@ function renderForum(){
     if(y.stamp !== null) return 1;
     return x.i - y.i;
   });
+  return items;
+}
+function renderForumDates(items){
+  var box = document.getElementById("forumDates");
+  if(!box) return;
+  var seen = {}, dates = [];
+  items.forEach(function(it){
+    var d = it.e.date ? String(it.e.date) : "";
+    if(d && !seen[d]){ seen[d] = true; dates.push(d); }
+  });
+  if(!dates.length){ box.innerHTML = ""; return; }
+  if(!forumDateSel || dates.indexOf(forumDateSel) === -1) forumDateSel = dates[0];
+  box.innerHTML = dates.map(function(d){
+    return '<button class="date-btn" type="button" data-forum-date="' + esc(d) + '" aria-pressed="' + (forumDateSel === d ? "true" : "false") + '">' + esc(d) + '</button>';
+  }).join("");
+  box.querySelectorAll("[data-forum-date]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      forumDateSel = btn.getAttribute("data-forum-date");
+      renderForum();
+    });
+  });
+}
+function renderForum(){
+  var el = document.getElementById("forumFeed");
+  if(!el) return;
+  if(!FORUM_POSTS.length){
+    var datesBox = document.getElementById("forumDates");
+    if(datesBox) datesBox.innerHTML = "";
+    el.innerHTML = '<div class="soc-empty"><span class="soc-empty-dot" aria-hidden="true"></span>' +
+      '<p>One voice a day. Nothing here yet — the first essay comes when someone has something to say.</p></div>';
+    return;
+  }
+  var allItems = forumSortedItems();
+  renderForumDates(allItems);
+  var items = allItems.filter(function(it){ return String(it.e.date || "") === forumDateSel; });
   el.innerHTML = items.map(function(it){ return forumEssayHtml(it.e); }).join("");
 }
 function showForum(){
